@@ -22,28 +22,30 @@ class Clif
     end
 
     def get(doc_id)
-      raw = open(FP_URL + doc_id, "Accept" => "application/json").read
+      headers = "Accept" => "application/json"
+      raw = open(FP_URL + doc_id, headers).read
       Snippet.new(JSON.parse(raw))
     end
     
     # Copy content to clipboard
-		def copy(content)
-			case RUBY_PLATFORM
-			when /darwin/
-				return content if `which pbcopy`.strip == ''
-				IO.popen('pbcopy', 'r+') { |clip| clip.print content }
-			when /linux/
-				return content if `which xclip  2> /dev/null`.strip == ''
-				IO.popen('xclip', 'r+') { |clip| clip.print content }
-			when /i386-cygwin/
-				return content if `which putclip`.strip == ''
-				IO.popen('putclip', 'r+') { |clip| clip.print content }
-			end
+    def copy(content)
+      case RUBY_PLATFORM
+      when /darwin/
+        return content if `which pbcopy`.strip == ''
+        IO.popen('pbcopy', 'r+') { |clip| clip.print content }
+      when /linux/
+        return content if `which xclip  2> /dev/null`.strip == ''
+        IO.popen('xclip', 'r+') { |clip| clip.print content }
+      when /i386-cygwin/
+        return content if `which putclip`.strip == ''
+        IO.popen('putclip', 'r+') { |clip| clip.print content }
+      end
 
-			content
-		end
+      content
+    end
   end
 
+  # Class for representing a snippet
   class Snippet
     attr_reader :snippet_id
     
