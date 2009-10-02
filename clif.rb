@@ -93,7 +93,7 @@ class Clif
     end
     
     def url
-      FP_URL + @snippet_id     
+      "#{FP_URL}#{@snippet_id}"
     end
 
     def method_missing(meth, *args, &blk)
@@ -114,7 +114,6 @@ class Clif
   end
 end
 
-p Clif.languages.class
 
 
 # Define some command-line options
