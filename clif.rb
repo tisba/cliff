@@ -141,6 +141,11 @@ opts = Trollop.options do
   BANNER
   opt :list_languages, "List all available languages", :default => false
   opt :refresh, "Refresh available languages", :default => false 
+
+  if ARGV.empty?
+    educate
+    exit
+  end
 end
 
 # List all available languages
