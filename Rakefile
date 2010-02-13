@@ -4,11 +4,11 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "clif"
+    gem.name = "cliff"
     gem.summary = %Q{CLI client in ruby for friendpaste.com }
-    gem.description = %Q{CLIF is a CLI client written in ruby for friendpaste.com}
+    gem.description = %Q{Cliff is a CLI client written in ruby for friendpaste.com}
     gem.email = "sebastian.cohnen@gmx.net"
-    gem.homepage = "http://github.com/tisba/clif"
+    gem.homepage = "http://github.com/tisba/cliff"
     gem.authors = ["Sebastian Cohnen"]
     gem.add_dependency "trollop", ">= 0"
     gem.add_dependency "json", ">= 0"
@@ -49,7 +49,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "clif #{version}"
+  rdoc.title = "cliff #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end

@@ -1,30 +1,30 @@
 #!/usr/bin/env ruby
 
 require "rubygems"
-require "clif"
+require "cliff"
 require "trollop"
 
 # Define some command-line options
 opts = Trollop.options do
   version "v0.2 (by) Sebastian Cohnen, 2010"
   banner <<-BANNER
-Clif is a CLI-Client for friendpaste.com. It's not yet finished but
+Cliff is a CLI-Client for friendpaste.com. It's not yet finished but
 should work. Currently only getting existing and creating new snippets
 is supported. Updates, Diffs, Versioning, etc. will soon follow!
 
-http://github.com/tisba/clif
+http://github.com/tisba/cliff
 
 Example usage:
-  # echo "Hello world!" | clif
-  # clif < file.txt
-  # clif someexistingfile.txt
-  # clif SOME_SNIPPET_ID > output.txt
+  # echo "Hello world!" | cliff
+  # cliff < file.txt
+  # cliff someexistingfile.txt
+  # cliff SOME_SNIPPET_ID > output.txt
 
 Note:
 When creating a new snippet, the complete URL is copied to your
 clipboard for direct usage on IRC and co.
 
-Clif is heavily inspired by the CLI-Clients for gist :-)
+Cliff is heavily inspired by the CLI-Clients for gist :-)
 
 Options:
 BANNER
@@ -40,13 +40,13 @@ end
 
 # List all available languages
 if opts[:list_languages]
-  Clif.languages.each { |lang| puts lang.join(': ') }
+  Cliff.languages.each { |lang| puts lang.join(': ') }
   exit
 end
 
 # Refresh available languages
 if opts[:refresh]
-  Clif::Helpers.refresh_languages_cache
+  Cliff::Helpers.refresh_languages_cache
   exit
 end
 
@@ -55,14 +55,14 @@ end
 # Let's see if our first param could be an existing file...
 if ARGV.first and File.exists?(ARGV.first)
   input = File.read(ARGV.first)
-  opts = {"language" => ARGV[1]} if Clif::Helpers.is_language?(ARGV[1])
-  puts Clif.create(input, opts).snippet_id
+  opts = {"language" => ARGV[1]} if Cliff::Helpers.is_language?(ARGV[1])
+  puts Cliff.create(input, opts).snippet_id
   exit
 end
 
 if STDIN.tty?
-  puts Clif.get(ARGV.first).snippet
+  puts Cliff.get(ARGV.first).snippet
 else
-  opts = {"language" => ARGV.first} if Clif::Helpers.is_language?(ARGV.first)
-  puts Clif.create(STDIN.read, opts).snippet_id
+  opts = {"language" => ARGV.first} if Cliff::Helpers.is_language?(ARGV.first)
+  puts Cliff.create(STDIN.read, opts).snippet_id
 end

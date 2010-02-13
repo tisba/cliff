@@ -9,7 +9,7 @@ rescue LoadError
   require 'json'
 end
 
-class Clif
+class Cliff
   
   class <<self
     def languages
@@ -37,7 +37,7 @@ class Clif
   class Helpers
     class << self
       def is_language?(opt)
-        Clif.languages.flatten.include?(opt)
+        Cliff.languages.flatten.include?(opt)
       end
 
       def cache_file_name
@@ -99,7 +99,7 @@ class Clif
     end
 
     def url
-      "#{Clif::fp_url}#{@snippet_id}"
+      "#{Cliff::fp_url}#{@snippet_id}"
     end
 
     def method_missing(meth, *args, &blk)
@@ -108,7 +108,7 @@ class Clif
     end
 
     def save
-      uri = URI.parse(Clif::fp_url)
+      uri = URI.parse(Cliff::fp_url)
       headers = {"Content-Type"  => "application/json", "Accept" => "application/json"}
       res = Net::HTTP.new(uri.host, uri.port).post(uri.path, @data.to_json, headers)
       if res.kind_of? Net::HTTPSuccess
