@@ -10,8 +10,7 @@ rescue LoadError
 end
 
 class Clif
-  FP_URL = "http://www.friendpaste.com/"
-
+  
   class <<self
     def languages
       @languages ||= Helpers.load_languages_from_cache
@@ -28,6 +27,10 @@ class Clif
       headers = {"Accept" => "application/json"}
       raw = open("#{FP_URL}/#{doc_id}", headers).read
       Snippet.new(JSON.parse(raw))
+    end
+    
+    def fp_url
+      "http://www.friendpaste.com/"
     end
   end
 
@@ -56,7 +59,7 @@ class Clif
       end
 
       def fetch_languages
-        open("#{FP_URL}/_all_languages").read
+        open("#{fp_url}/_all_languages").read
       end
 
       # Copy content to clipboard
@@ -96,7 +99,7 @@ class Clif
     end
 
     def url
-      "#{FP_URL}#{@snippet_id}"
+      "#{Clif::fp_url}#{@snippet_id}"
     end
 
     def method_missing(meth, *args, &blk)
@@ -105,7 +108,7 @@ class Clif
     end
 
     def save
-      uri = URI.parse(Clif::FP_URL)
+      uri = URI.parse(Clif::fp_url)
       headers = {"Content-Type"  => "application/json", "Accept" => "application/json"}
       res = Net::HTTP.new(uri.host, uri.port).post(uri.path, @data.to_json, headers)
       if res.kind_of? Net::HTTPSuccess
