@@ -53,7 +53,8 @@ end
 # Let's see if our first param could be an existing file...
 if ARGV.first and File.exists?(ARGV.first)
   input = File.read(ARGV.first)
-  puts Clif.create(input, {}).snippet_id
+  opts = {"language" => ARGV[1]} if Clif::Helpers.is_language?(ARGV[1])
+  puts Clif.create(input, opts).snippet_id
   exit
 end
 
