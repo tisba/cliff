@@ -1,19 +1,22 @@
-#!/usr/bin/env ruby
+$:.unshift(File.dirname(__FILE__))
 
 require 'open-uri'
 require 'net/http'
-require 'rubygems'
-require 'json'
-require "trollop"
+
+begin
+  require 'yajl/json'
+rescue LoadError
+  require 'json'
+end
 
 class Clif
-  FP_URL = "http://www.friendpaste.com/"   
-    
+  FP_URL = "http://www.friendpaste.com/"
+
   class <<self
     def languages
       @languages ||= Helpers.load_languages_from_cache
     end
- 
+
     def create(content, params)
       snippet = Snippet.new(content, params)
       snippet.save
@@ -34,10 +37,6 @@ class Clif
         Clif.languages.flatten.include?(opt)
       end
 
-      def fetch_languages
-        open("#{FP_URL}/_all_languages").read
-      end
-            
       def cache_file_name
         File.join(ENV['HOME'], ".friendpaste_languages")
       end
@@ -54,6 +53,10 @@ class Clif
         else
           refresh_languages_cache
         end
+      end
+
+      def fetch_languages
+        open("#{FP_URL}/_all_languages").read
       end
 
       # Copy content to clipboard
@@ -78,7 +81,7 @@ class Clif
   # Class for representing a snippet
   class Snippet
     attr_reader :snippet_id
-    
+
     def initialize(data, params = {})
       data = {"snippet" => data} unless data.kind_of? Hash
 
@@ -91,14 +94,14 @@ class Clif
       snippet = new(data)
       snippet.save
     end
-    
+
     def url
       "#{FP_URL}#{@snippet_id}"
     end
 
     def method_missing(meth, *args, &blk)
       super unless @data.keys.include?(meth.to_s)
-      @data[meth.to_s] 
+      @data[meth.to_s]
     end
 
     def save
@@ -112,66 +115,4 @@ class Clif
       end
     end
   end
-end
-
-
-
-# Define some command-line options
-opts = Trollop.options do
-  version "v0.1 (by) Sebastian Cohnen, 2009"
-  banner <<-BANNER
-  Clif is a CLI-Client for friendpaste.com. It's not yet finished but
-  should work. Currently only getting existing and creating new snippets
-  is supported. Updates, Diffs, Versioning, etc. will soon follow!
-
-  http://github.com/tisba/clif
-
-  Usage:
-  $ clif < file.txt
-  $ cat mycode.rb | clif rb # Clif will try to find a matching language for syntax hl
-  $ clif someexistingfile.txt # Clif will upload the contents of the file if it exists
-  $ clif SOME_SNIPPET_ID > output.txt
-
-  Note:
-  When creating a new snippet, the complete URL is copied to your
-  clipboard for direct usage on IRC and co.
-
-  Clif is heavily inspired by the CLI-Clients for gist :-)
-  
-  BANNER
-  opt :list_languages, "List all available languages", :default => false
-  opt :refresh, "Refresh available languages", :default => false 
-
-  if ARGV.empty?
-    educate
-    exit
-  end
-end
-
-# List all available languages
-if opts[:list_languages]
-  Clif.languages.each { |lang| puts lang.join(': ') }
-  exit
-end
-
-# Refresh available languages
-if opts[:refresh]
-  Clif::Helpers.refresh_languages_cache
-  exit
-end
-
-# Let's rock!
-
-# Let's see if our first param could be an existing file...
-if ARGV.first and File.exists?(ARGV.first)
-  input = File.read(ARGV.first)
-  puts Clif.create(input, {}).snippet_id
-  exit
-end
-
-if $stdin.tty?
-  puts Clif.get(ARGV.first).snippet
-else
-  opts = {"language" => ARGV.first} if Clif::Helpers.is_language?(ARGV.first)
-  puts Clif.create($stdin.read, opts).snippet_id
 end
