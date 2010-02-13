@@ -3,6 +3,10 @@ Cliff is a CLI-Client for [friendpaste.com][fp]. You can paste stuff to Friendpa
 
 And btw: [friendpaste.com][fp] is powered by [CouchDB][couch] :)
 
+# Installation
+
+    gem install cliff
+
 # Usage
 
     cliff [--help | --list-languages | --refresh]
