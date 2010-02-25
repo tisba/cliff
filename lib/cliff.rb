@@ -25,7 +25,7 @@ class Cliff
 
     def get(doc_id)
       headers = {"Accept" => "application/json"}
-      raw = open("#{FP_URL}/#{doc_id}", headers).read
+      raw = open("#{Cliff::fp_url}/#{doc_id}", headers).read
       Snippet.new(JSON.parse(raw))
     end
     
